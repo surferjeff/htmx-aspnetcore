@@ -26,9 +26,11 @@ namespace Exercises.Pages
                     var errors = ModelState[field].Errors;
                     foreach (var error in errors) {
                         var text = System.Net.WebUtility.HtmlEncode(error.ErrorMessage);
-                        return Content(text, "text/html");
+                        var scrip = $"<script>document.getElementById('{field}').classList.add('input-validation-error')</script>";
+                        return Content(text + scrip, "text/html");
                     }
-                    return Content("", "text/html");                    
+                    var script = $"<script>document.getElementById('{field}').classList.remove('input-validation-error')</script>";
+                    return Content(script, "text/html");
                 }
                 return Partial("_Form", this);
             } else {
