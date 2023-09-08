@@ -21,7 +21,7 @@ builder.Services.AddHostedService<ServerEventsWorker>();
 
 // define asp.net request pipeline
 var app = builder.Build();
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 

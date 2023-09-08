@@ -1,30 +1,40 @@
 @model Exercises.Pages.FormValidation
 
-<form hx-post="@Url.Page("09_FormValidation")"
+<form hx-post="@Model.Request.Path"
       hx-swap="outerHTML"
-      class="form-horizontal needs-validation"
-      _="on htmx:beforeSend set #submitButton.disabled to 'disabled'">
-
+      class="form-horizontal needs-validation">
     <!-- Text input-->
     <div class="mb-3">
         <label class="form-label" asp-for="Name"></label>
-        <input type="text" class="form-control" asp-for="Name">
+        <input type="text" class="form-control" asp-for="Name"
+            hx-post='@(Model.Request.Path + "?validate=Name")'
+            hx-trigger="blur"
+            hx-target="#name-feedback"
+            hx-swap="innerHTML"
+        >
         <div class="invalid-feedback">
-            <span asp-validation-for="Name"></span>
+            <span asp-validation-for="Name" id="name-feedback"></span>
         </div>
     </div>
 
     <!-- Text input-->
     <div class="mb-3">
         <label class="form-label" asp-for="Age"></label>
-        <input type="text" class="form-control" asp-for="Age">
+        <input type="text" class="form-control" asp-for="Age"
+            hx-post='@(Model.Request.Path + "?validate=Age")'
+            hx-trigger="blur"
+            hx-target="#age-feedback"
+            hx-swap="innerHTML"
+        >
         <div class="invalid-feedback">
-            <span asp-validation-for="Age"></span>
+            <span asp-validation-for="Age" id="age-feedback"></span>
         </div>
     </div>
 
     <div class="control">
-        <button id="submitButton" type="submit" class="btn btn-primary">
+        <button id="submitButton" type="submit" class="btn btn-primary"
+            onclick="this.disabled = true"
+        >
             <span class="htmx-indicator">
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span class="visually-hidden">Loading...</span>
