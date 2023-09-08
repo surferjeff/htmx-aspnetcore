@@ -21,21 +21,26 @@ namespace Exercises.Pages
             await Task.Delay(TimeSpan.FromMilliseconds(100));
             // handle Htmx request
             if (Request.IsHtmx()) {
-                if (Request.Query["validate"].Count > 0) {
-                    var field = Request.Query["validate"][0];
-                    var errors = ModelState[field].Errors;
-                    foreach (var error in errors) {
-                        var text = System.Net.WebUtility.HtmlEncode(error.ErrorMessage);
-                        var scrip = $"<script>document.getElementById('{field}').classList.add('input-validation-error')</script>";
-                        return Content(text + scrip, "text/html");
-                    }
-                    var script = $"<script>document.getElementById('{field}').classList.remove('input-validation-error')</script>";
-                    return Content(script, "text/html");
-                }
-                return Partial("_Form", this);
+                return Validate(this) ?? Partial("_Form", this);
             } else {
                 return Page();
             }
+        }
+
+        static public IActionResult? Validate(PageModel pageModel) {
+            if (pageModel.Request.Query["validate"].Count > 0) {
+                var field = pageModel.Request.Query["validate"][0];
+                var errors = pageModel.ModelState[field].Errors;
+                var id = System.Net.WebUtility.HtmlEncode(field);
+                foreach (var error in errors) {
+                    var text = System.Net.WebUtility.HtmlEncode(error.ErrorMessage);
+                    var scrip = $"<script>document.getElementById('{id}').classList.add('input-validation-error')</script>";
+                    return pageModel.Content(text + scrip, "text/html");
+                }
+                var script = $"<script>document.getElementById('{id}').classList.remove('input-validation-error')</script>";
+                return pageModel.Content(script, "text/html");
+            }
+            return null;
         }
     }
 }
