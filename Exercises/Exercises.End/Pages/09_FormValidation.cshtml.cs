@@ -20,13 +20,13 @@ namespace Exercises.Pages
             // see the loading spinner (remove for production)
             await Task.Delay(TimeSpan.FromMilliseconds(100));
             // handle Htmx request
-            if (Request.IsHtmx()) {
-                return Validate(this) ?? Partial("_Form", this);
-            } else {
-                return Page();
-            }
+            return Request.IsHtmx()
+                ? Validate(this) ?? Partial("_Form", this)
+                : Page();
         }
 
+        // If the request query contains ?validate=FieldName, then return
+        // the results of validating that field.
         static public IActionResult? Validate(PageModel pageModel) {
             if (pageModel.Request.Query["validate"].Count > 0) {
                 var field = pageModel.Request.Query["validate"][0];
